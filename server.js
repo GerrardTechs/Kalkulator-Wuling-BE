@@ -9,8 +9,22 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: [
+    'https://wulingmate.netlify.app', // Izin untuk Netlify
+    'http://localhost:5173',          // Izin untuk testing lokal (Vite)
+    'http://localhost:3000'           // Izin untuk testing lokal (React standar)
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
+// Tambahkan endpoint '/' ini agar kamu bisa tes langsung di browser
+app.get('/', (req, res) => {
+  res.send('🚀 Backend WulingMate AI Aktif & Berjalan Lancar!');
+});
 
 const chatLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
