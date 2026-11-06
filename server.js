@@ -9,6 +9,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.set('trust proxy', 1);
+
 app.use(cors({
   origin: [
     'https://wulingmate.netlify.app', // Izin untuk Netlify
@@ -20,6 +22,9 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus: 200
 }));
+
+app.use(express.json());
+
 
 // Tambahkan endpoint '/' ini agar kamu bisa tes langsung di browser
 app.get('/', (req, res) => {
@@ -225,7 +230,7 @@ const getSmartJsonFallback = (userMessage) => {
 };
 
 app.post('/api/chat', chatLimiter, async (req, res) => {
-  const { history, message } = req.body;
+  const { history, message } = req.body || {}; 
 
   if (!message) {
     return res.status(400).json({ error: 'Pesan tidak boleh kosong.' });
